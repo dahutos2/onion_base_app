@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../share/presentation_share.dart';
 
-class HeaderView extends StatelessWidget with PreferredSizeWidget {
+class HeaderView extends StatelessWidget implements PreferredSizeWidget {
   final String? title;
   const HeaderView({super.key, this.title});
 

@@ -8,7 +8,7 @@ import '../../share/presentation_share.dart';
 
 const _gap = 10.0;
 
-class Page01HeaderView extends ConsumerWidget with PreferredSizeWidget {
+class Page01HeaderView extends ConsumerWidget implements PreferredSizeWidget {
   const Page01HeaderView({super.key});
 
   @override
