@@ -1,15 +1,15 @@
-import 'dart:collection';
 import 'dart:async';
 
-import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import 'index.dart';
+import 'presentation/index.dart';
 
 final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
+
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   // 画面の向きを固定.
@@ -21,8 +21,10 @@ void main() {
   if (kDebugMode) {
     runZonedGuarded(() {
       FlutterError.onError = (FlutterErrorDetails details) {
-        showErrorDialog(_navigatorKey.currentState?.overlay?.context,
-            details.exceptionAsString());
+        showErrorDialog(
+          _navigatorKey.currentState?.overlay?.context,
+          details.exceptionAsString(),
+        );
       };
 
       runApp(
@@ -32,7 +34,9 @@ void main() {
       );
     }, (error, stackTrace) {
       showErrorDialog(
-          _navigatorKey.currentState?.overlay?.context, error.toString());
+        _navigatorKey.currentState?.overlay?.context,
+        error.toString(),
+      );
     });
   } else {
     runApp(
@@ -43,72 +47,6 @@ void main() {
   }
 }
 
-// API
-final dbHelperProvider = Provider<DbHelper>(
-  (_) => DbHelper(),
-);
-
-// Repository
-final sampleRepositoryProvider = Provider.autoDispose(
-  (ref) => SampleRepository(dbHelper: ref.read(dbHelperProvider)),
-);
-
-// Factory
-final sampleFactoryProvider = Provider.autoDispose(
-  (ref) => SampleFactory(repository: ref.read(sampleRepositoryProvider)),
-);
-
-// UseCase
-final getAllSampleUseCaseProvider = Provider.autoDispose(
-  (ref) => GetAllSampleUseCase(repository: ref.read(sampleRepositoryProvider)),
-);
-final getNewSampleUseCaseProvider = Provider.autoDispose(
-  (ref) => GetNewSampleUseCase(
-      factory: ref.read(sampleFactoryProvider),
-      repository: ref.read(sampleRepositoryProvider)),
-);
-final removeSampleUseCaseProvider = Provider.autoDispose(
-  (ref) => RemoveSampleUseCase(repository: ref.read(sampleRepositoryProvider)),
-);
-final updateSampleUseCaseProvider = Provider.autoDispose(
-  (ref) => UpdateSampleUseCase(repository: ref.read(sampleRepositoryProvider)),
-);
-final copySamplesUseCaseProvider = Provider.autoDispose(
-  (ref) => CopySamplesUseCase(
-    repository: ref.read(sampleRepositoryProvider),
-    factory: ref.read(sampleFactoryProvider),
-  ),
-);
-
-// AppInit
-final appInitProvider = Provider.autoDispose(
-  (ref) => AppInit(
-      navigatorKey: _navigatorKey, dbHelper: ref.read(dbHelperProvider)),
-);
-
-// Notifier
-final currentPageNotifierProvider =
-    StateNotifierProvider<CurrentPageNotifier, CurrentPage>(
-  (_) => CurrentPageNotifier(),
-);
-final searchSampleNotifierProvider =
-    StateNotifierProvider<SearchSampleNotifier, String>(
-  (_) => SearchSampleNotifier(),
-);
-final editSampleNotifierProvider =
-    StateNotifierProvider<EditSampleNotifier, HashSet<String>>(
-  (_) => EditSampleNotifier(),
-);
-final sampleNotifierProvider = ChangeNotifierProvider.autoDispose(
-  (ref) => SampleNotifier(
-    getAllSampleUseCase: ref.read(getAllSampleUseCaseProvider),
-    getNewSampleUseCase: ref.read(getNewSampleUseCaseProvider),
-    removeSampleUseCase: ref.read(removeSampleUseCaseProvider),
-    updateSampleUseCase: ref.read(updateSampleUseCaseProvider),
-    copySamplesUseCase: ref.read(copySamplesUseCaseProvider),
-  ),
-);
-
 class MyApp extends ConsumerWidget {
   const MyApp({super.key});
 
@@ -117,9 +55,9 @@ class MyApp extends ConsumerWidget {
     return MaterialApp(
       localizationsDelegates: L10n.localizationsDelegates,
       supportedLocales: L10n.supportedLocales,
-      locale: const Locale("ja"),
-      navigatorKey: ref.watch(appInitProvider).navigatorKey,
-      onGenerateRoute: (_) => RouteType.fadeIn(nextPage: const InitPage()),
+      locale: const Locale('ja'),
+      navigatorKey: _navigatorKey,
+      onGenerateRoute: (_) => RouteType.fadeIn(nextPage: const HomePage()),
     );
   }
 }
@@ -133,7 +71,7 @@ void showErrorDialog(BuildContext? context, String errorMessage) {
   if (context == null) return;
   if (!_isErrorDialogVisible) {
     _isErrorDialogVisible = true;
-    showDialog(
+    showDialog<void>(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(

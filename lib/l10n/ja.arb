@@ -4,42 +4,6 @@
     "@test": {
         "description": "これはテストの翻訳説明文です、基本的に使わないですが、運営管理に活用ところです。注釈と認識しましょう"
     },
-    "initPageMainContentMessage": "ようこそ",
-    "page01HeaderTitle": "ページ01",
-    "page02HeaderTitle": "ページ02",
-    "page03HeaderTitle": "ページ03",
-    "page01FooterLabel": "ページ01",
-    "page02FooterLabel": "ページ02",
-    "page03FooterLabel": "ページ03",
-    "copyActionFooterLabel": "コピー",
-    "deleteActionFooterLabel": "削除",
-    "tempActionFooterLabel": "仮",
-    "page01SampleListEmpty": "サンプルがありません",
-    "page01EditComplete": "完了",
-    "page01EditAllSelect": "全て選択",
-    "page01EditAllNotSelect": "全て未選択",
-    "alertDialogCancel": "キャンセル",
-    "alertDialogRemoveTitle": "「{name}」を削除してよろしいですか？",
-    "@alertDialogRemoveTitle": {
-        "placeholders": {
-            "name": {}
-        }
-    },
-    "alertDialogMultiRemoveTitle": "「{name}」を含む{count}項目を削除してよろしいですか？",
-    "@alertDialogMultiRemoveTitle": {
-        "placeholders": {
-            "name": {},
-            "count": {}
-        }
-    },
-    "alertDialogRemoveSubTitle": "削除すると復元出来なくなります。",
-    "alertDialogRemoveDone": "削除",
     "showErrorDialogTitle": "エラー発生",
-    "showErrorDialogOK": "OK",
-    "sampleAddButtonDialogTitle": "新しいサンプルを作成",
-    "sampleAddButtonDialogHintText": "名前",
-    "sampleAddButtonDialogDone": "作成",
-    "searchTextBoxHintText": "検索",
-    "searchTextBoxCancel": "キャンセル",
-    "editSampleTextBoxHintText": "名前を入力して下さい。"
+    "showErrorDialogOK": "OK"
 }

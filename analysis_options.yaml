@@ -1,29 +1,103 @@
-# This file configures the analyzer, which statically analyzes Dart code to
-# check for errors, warnings, and lints.
+# このファイルは、Dartコードを静的に解析して
+# エラー、警告、lintsをチェックするアナライザを設定します。
 #
-# The issues identified by the analyzer are surfaced in the UI of Dart-enabled
-# IDEs (https://dart.dev/tools#ides-and-editors). The analyzer can also be
-# invoked from the command line by running `flutter analyze`.
+# アナライザーによって特定された問題は、
+# Dart対応IDEのUI（https://dart.dev/tools#ides-and-editors）に表示されます。
+# コマンドラインから`flutter analyze`を実行してアナライザーを起動することもできます。
 
-# The following line activates a set of recommended lints for Flutter apps,
-# packages, and plugins designed to encourage good coding practices.
-include: package:flutter_lints/flutter.yaml
+# 下記はFlutterアプリ、パッケージ、プラグインのための推奨lintsのセットをアクティブにし、
+# 良いコーディングプラクティスを奨励するような設計を可能にします。
+# include: package:flutter_lints/flutter.yaml
+include: package:linteo/analysis_options.yaml
+
+analyzer:
+  errors:
+    sort_pub_dependencies: ignore
+  plugins:
+    - architecture_linter
 
 linter:
-  # The lint rules applied to this project can be customized in the
-  # section below to disable rules from the `package:flutter_lints/flutter.yaml`
-  # included above or to enable additional rules. A list of all available lints
-  # and their documentation is published at
-  # https://dart-lang.github.io/linter/lints/index.html.
+  # このプロジェクトに適用されるlintルールは、
+  # 上記の`package:flutter_lints/flutter.yaml`に含まれる
+  # ルールを無効にしたり、追加のルールを有効にしたりと、以下のセクションでカスタマイズできます。
+  # 利用可能なすべてのリントとそのドキュメントのリストは、
+  # https://dart-lang.github.io/linter/lints/index.html を参照して下さい。
   #
-  # Instead of disabling a lint rule for the entire project in the
-  # section below, it can also be suppressed for a single line of code
-  # or a specific dart file by using the `// ignore: name_of_lint` and
-  # `// ignore_for_file: name_of_lint` syntax on the line or in the file
-  # producing the lint.
+  # このセクションで lint ルールを無効にするのではなく、
+  # 下記を記載することで、特定のコード行やDartファイル全体でルールを無視することができます。
+  # // ignore: name_of_lint や // ignore_for_file: name_of_lint を使用する。
   rules:
-    # avoid_print: false  # Uncomment to disable the `avoid_print` rule
-    # prefer_single_quotes: true  # Uncomment to enable the `prefer_single_quotes` rule
+    # 文字列を定義する際に単一引用符(')を使用することを推奨します。
+    prefer_single_quotes: true
+    # このルールをfalseに設定しているので、二重引用符(")を使用することは推奨されていません。
+    prefer_double_quotes: false
+    # void型の非同期関数を避けることを推奨します。
+    avoid_returning_this: true
+    # Colorの指定だけをしているContainerがある場合、ColoredBoxの使用を推奨します。
+    use_colored_box: true
+    # Decorationの指定だけをしているContainerがある場合、DecoratedBoxの使用を推奨します。
+    use_decorated_box: true
+    # StreamSubscriptionインスタンスに対してcancelを行うことを推奨します。
+    cancel_subscriptions: true
+    # オブジェクトを返す静的メソッドよりも、コンストラクタを使用することを推奨します。
+    prefer_constructors_over_static_methods: true
+    # パフォーマンスの低下を引き起こす可能性がある非同期のI/Oを避けることを推奨します。
+    avoid_slow_async_io: true
+    # 1行に複数の変数宣言を避けることを推奨します。
+    avoid_multiple_declarations_per_line: true
 
-# Additional information about this file can be found at
+    # プロジェクトファイルは相対パスでimportすることを推奨します。
+    always_use_package_imports: false
+    prefer_relative_imports: true
+
+# このファイルに関する追加情報は下記を参照して下さい。
 # https://dart.dev/guides/language/analysis-options
+
+architecture_linter:
+  excludes:
+    - "**.g.dart"
+  lint_severity: error
+
+  layers:
+    - &domainLayer
+      name: "Domain"
+      path: "(domain)"
+    - &applicationLayer
+      name: "Application"
+      path: "(application)"
+    - &infrastructureLayer
+      name: "Infrastructure"
+      path: "(infrastructure)"
+    - &viewModelLayer
+      name: "ViewModel"
+      path: "(view_model)"
+    - &viewLayer
+      name: "View"
+      path: "(view)"
+
+  banned_imports:
+    - layer: *domainLayer
+      banned:
+        - *applicationLayer
+        - *infrastructureLayer
+        - *viewModelLayer
+        - *viewLayer
+    - layer: *applicationLayer
+      banned:
+        - *infrastructureLayer
+        - *viewModelLayer
+        - *viewLayer
+    - layer: *infrastructureLayer
+      banned:
+        - *viewModelLayer
+        - *viewLayer
+    - layer: *viewModelLayer
+      banned:
+        - *domainLayer
+        - *infrastructureLayer
+        - *viewLayer
+    - layer: *viewLayer
+      banned:
+        - *domainLayer
+        - *applicationLayer
+        - *infrastructureLayer
